@@ -1,0 +1,24 @@
+server:
+  port: 9090
+  servlet:
+    context-path: /ingestion
+
+spring:
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate.ddl-auto: update
+    show-sql: true
+    generate-ddl: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/demo
+    username: root
+    password: root
+
+  profiles:
+    active:
+
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
