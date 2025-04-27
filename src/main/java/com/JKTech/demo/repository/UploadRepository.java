@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.JKTech.demo.entity.UploadEntity;
 
 @Repository
-public interface UploadRepository extends JpaRepository<UploadEntity, String> {
+public interface UploadRepository extends JpaRepository<UploadEntity, Long> {
 
 }

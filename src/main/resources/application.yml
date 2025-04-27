@@ -5,15 +5,15 @@ server:
 
 spring:
   jpa:
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-    hibernate.ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate.ddl-auto: create
     show-sql: true
     generate-ddl: true
   datasource:
-    url: jdbc:mysql://localhost:3306/demo
-    username: root
+    url: jdbc:postgresql://localhost:5432/ingestion
+    username: postgres
     password: root
+    driver-class-name: org.postgresql.Driver
 
   profiles:
     active:
