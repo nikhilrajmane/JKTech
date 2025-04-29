@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.JKTech.demo.dto.PageDto;
 import com.JKTech.demo.dto.UploadDto;
 import com.JKTech.demo.entity.UploadEntity;
 import com.JKTech.demo.repository.UploadRepository;
@@ -33,7 +34,7 @@ public class UploadServiceImpl implements UploadService {
 	private FileUtility fileUtility;
 
 	@Override
-	public UploadDto uploadDocument(MultipartFile file) throws Exception {
+	public UploadDto uploadDocument(MultipartFile file, String author) throws Exception {
 
 		ObjectMapper mapper = new ObjectMapper();
 		UploadDto uploadDto = new UploadDto();
@@ -41,7 +42,7 @@ public class UploadServiceImpl implements UploadService {
 		try {
 			content = fileUtility.extractFile(file);
 			UploadEntity uploadEntity = new UploadEntity(file.getOriginalFilename(), file.getContentType(),
-					file.getSize(), content, new Date());
+					file.getSize(), content, new Date(), author);
 
 			uploadEntity = uploadRepository.save(uploadEntity);
 
@@ -66,12 +67,16 @@ public class UploadServiceImpl implements UploadService {
 	}
 
 	@Override
-	public Page<UploadEntity> filterDocuments(String author, String type, Date after, Date before,
-			Pageable pageable) {
+	public PageDto filterDocuments(String author, String type, Date after, Date before, Pageable pageable) {
 		Specification<UploadEntity> spec = Specification.where(fileUtility.hasAuthor(author))
 				.and(fileUtility.hasType(type)).and(fileUtility.uploadedAfter(after))
 				.and(fileUtility.uploadedBefore(before));
-		return uploadRepository.findAll(spec, pageable);
+		Page<UploadEntity> findAll = uploadRepository.findAll(spec, pageable);
+
+		PageDto pageDto = new PageDto(findAll.getSize(), findAll.getNumber(), findAll.getTotalElements(),
+				findAll.getTotalPages(), findAll.getContent());
+
+		return pageDto;
 	}
 
 }

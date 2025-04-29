@@ -1,6 +1,7 @@
 package com.JKTech.demo.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,12 +15,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "uploads")
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
 public class UploadEntity {
 
@@ -37,16 +40,20 @@ public class UploadEntity {
 	@Column(length = 50000)
 	private String content; // Extracted text
 
-	 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date uploadTime;
 
-	public UploadEntity(String filename, String fileType, long fileSize, String content, Date uploadTime) {
+	private String author;
+
+	public UploadEntity(String filename, String fileType, long fileSize, String content, Date uploadTime,
+			String author) {
 		super();
 		this.filename = filename;
 		this.fileType = fileType;
 		this.fileSize = fileSize;
 		this.content = content;
 		this.uploadTime = uploadTime;
+		this.author = author;
 	}
 
 }

@@ -6,7 +6,7 @@ server:
 spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate.ddl-auto: create
+    hibernate.ddl-auto: update
     show-sql: true
     generate-ddl: true
   datasource:
