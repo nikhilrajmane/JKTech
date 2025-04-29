@@ -1,14 +1,18 @@
 package com.JKTech.demo.utility;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.Scanner;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.JKTech.demo.entity.UploadEntity;
 
 @Component
 public class FileUtility {
@@ -32,6 +36,23 @@ public class FileUtility {
 				throw new IllegalArgumentException("Unsupported file type: " + filename);
 			}
 		}
+	}
+
+	public Specification<UploadEntity> hasAuthor(String author) {
+		return (root, query, cb) -> author == null ? null
+				: cb.equal(cb.lower(root.get("author")), author.toLowerCase());
+	}
+
+	public Specification<UploadEntity> hasType(String type) {
+		return (root, query, cb) -> type == null ? null : cb.equal(cb.lower(root.get("fileType")), type.toLowerCase());
+	}
+
+	public Specification<UploadEntity> uploadedAfter(Date after) {
+		return (root, query, cb) -> after == null ? null : cb.greaterThanOrEqualTo(root.get("uploadTime"), after);
+	}
+
+	public Specification<UploadEntity> uploadedBefore(Date before) {
+		return (root, query, cb) -> before == null ? null : cb.lessThanOrEqualTo(root.get("uploadTime"), before);
 	}
 
 }

@@ -1,8 +1,12 @@
 package com.JKTech.demo.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +16,7 @@ import com.JKTech.demo.entity.UploadEntity;
 import com.JKTech.demo.repository.UploadRepository;
 import com.JKTech.demo.service.UploadService;
 import com.JKTech.demo.utility.FileUtility;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +52,26 @@ public class UploadServiceImpl implements UploadService {
 		}
 		return uploadDto;
 
+	}
+
+	@Override
+	public List<UploadDto> searchDocuments(String keyword) {
+
+		ObjectMapper mapper = new ObjectMapper();
+		List<UploadEntity> uploadEntity = uploadRepository.searchByKeyword(keyword);
+		List<UploadDto> listUploadDto = mapper.convertValue(uploadEntity, new TypeReference<List<UploadDto>>() {
+		});
+
+		return listUploadDto;
+	}
+
+	@Override
+	public Page<UploadEntity> filterDocuments(String author, String type, Date after, Date before,
+			Pageable pageable) {
+		Specification<UploadEntity> spec = Specification.where(fileUtility.hasAuthor(author))
+				.and(fileUtility.hasType(type)).and(fileUtility.uploadedAfter(after))
+				.and(fileUtility.uploadedBefore(before));
+		return uploadRepository.findAll(spec, pageable);
 	}
 
 }
